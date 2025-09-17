@@ -5,14 +5,45 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     PermissionRequiredMixin
 )
-from .models import Course, Module, Content
+from .models import Course, Module, Content, Subject
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateResponseMixin, View
 from .forms import ModuleFormSet
 from django.apps import apps
 from django.forms.models import modelform_factory
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
+from django.db.models import Count
+from django.views.generic.detail import DetailView
 
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = "courses/course/detail.html"
+
+
+class CourseListView(TemplateResponseMixin, View):
+    model = Course
+    template_name = "courses/course/list.html"
+
+    def get(self, request, subject=None):
+        subjects = Subject.objects.annotate(
+            total_courses=Count("courses")
+        )
+        courses = Course.objects.annotate(
+            total_modules=Count("modules")
+        )
+
+        if subject:
+            subject = get_object_or_404(Subject, slug=subject)
+            courses = courses.filter(subject=subject)
+
+        return self.render_to_response(
+            {
+                "subjects": subjects,
+                "subject": subject,
+                "courses": courses
+            }
+        )
 
 class ModuleOrderView(CsrfExemptMixin, JsonRequestResponseMixin, View):
     def post(self, request):
