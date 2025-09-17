@@ -67,3 +67,58 @@
   </div>
 {% endwith %}
 {% endblock %}
+
+{% block domready %}
+  var options = {
+    method: "POST",
+    mode: "same-origin"
+  };
+
+  const moduleOrderUrl = "{% url 'module_order' %}";
+
+  sortable("#modules", {
+    forcePlaceHolderSize: true,
+    placeholderClass: "placeholder"
+  })[0].addEventListener("sortupdate", function (e) {
+    let modulesOrder = {};
+    var modules = document.querySelectorAll("#modules li");
+
+    modules.forEach(function (module, index) {
+      // update module index
+      modulesOrder[module.dataset.id] = index;
+      // update index in html element
+      module.querySelector(".order").innerHTML = index + 1;
+    });
+
+    // add new order to the http request options
+    options["body"] = JSON.stringify(modulesOrder);
+
+    // send http request
+    fetch(moduleOrderUrl, options);
+  });
+
+  const contentOrderUrl = "{% url 'content_order' %}";
+
+  sortable("#module-contents", {
+    forcePlaceHolderSize: true,
+    placeholderClass: "placeholder"
+  })[0].addEventListener("sortupdate", function (e) {
+    let contentOrder = {};
+    var contents = document.querySelectorAll("#module-contents div");
+
+    contents.forEach(function (content, index) {
+      // update content index
+      contentOrder[content.dataset.id] = index;
+    });
+
+    // add new order to the http request options
+    options["body"] = JSON.stringify(contentOrder);
+
+    // send http request
+    fetch(contentOrderUrl, options);
+  });
+{% endblock %}
+
+{% block include_js %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5sortable/0.13.3/html5sortable.min.js"></script>
+{% endblock %}
