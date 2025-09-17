@@ -14,11 +14,19 @@ from django.forms.models import modelform_factory
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 from django.db.models import Count
 from django.views.generic.detail import DetailView
+from students.forms import CourseEnrollForm
 
 
 class CourseDetailView(DetailView):
     model = Course
     template_name = "courses/course/detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["enroll_form"] = CourseEnrollForm(
+            initial={"course": self.object}
+        )
+        return context
 
 
 class CourseListView(TemplateResponseMixin, View):
