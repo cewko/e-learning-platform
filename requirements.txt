@@ -5,3 +5,4 @@ Pillow~=11.2
 django-braces==1.15.0
 django-embed-video==1.4.9
 setuptools==80.9.0
+memcache==4.0.0
