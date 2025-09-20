@@ -39,5 +39,5 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = [
             "id", "subject", "title",
             "slug", "overview", "created",
-            "updated", "owner", "modules"
+            "owner", "modules"
         ]
