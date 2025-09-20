@@ -1,6 +1,6 @@
 from django.db.models import Count
 from rest_framework import serializers
-from courses.models import Subject
+from courses.models import Course, Subject
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -22,4 +22,16 @@ class SubjectSerializer(serializers.ModelSerializer):
             "id", "title", 
             "slug", "total_courses",
             "popular_courses",
+        ]
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    modules = serializers.StringRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = Course
+        fields = [
+            "id", "subject", "title",
+            "slug", "overview", "created",
+            "updated", "owner", "modules"
         ]
