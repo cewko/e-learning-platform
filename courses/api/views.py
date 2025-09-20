@@ -4,6 +4,16 @@ from courses.api.serializars import SubjectSerializer, CourseSerializer
 from courses.models import Subject, Course
 from django.db.models import Count
 from courses.api.pagination import StandardPagination
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+class CourseEnrollView(APIView):
+    def post(self, request, pk, format=None):
+        course = get_object_or_404(Course, pk=pk)
+        course.students.add(request.user)
+        return Response({"enrolled": True})
 
 
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):
