@@ -1,16 +1,17 @@
-# pull base python docker image
+# Pull official base Python Docker image
 FROM python:3.12.3
 
-# set env variables
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# set working dir
+# Set work directory
 WORKDIR /code
 
-# install dependencies
+# Install dependencies
 RUN pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# copy the django project . .
+# Copy the Django project
+COPY . .

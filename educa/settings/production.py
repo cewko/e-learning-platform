@@ -21,3 +21,23 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+REDIS_URL = "redis://cache:6379"
+CACHES["default"]["LOCATION"] = REDIS_URL
+CHANNEL_LAYERS["default"]["CONFIG"]["hosts"] = [REDIS_URL]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
