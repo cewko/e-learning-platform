@@ -1,5 +1,4 @@
 services:
-
   db:
     image: postgres:16.2
     restart: always
@@ -14,8 +13,15 @@ services:
 
   web:
     build: .
-    command: ["./wait-for-it.sh", "db:5432", "--",
-              "uwsgi", "--ini", "/code/config/uwsgi/uwsgi.ini"]
+    command:
+      [
+        "./wait-for-it.sh",
+        "db:5432",
+        "--",
+        "uwsgi",
+        "--ini",
+        "/code/config/uwsgi/uwsgi.ini",
+      ]
     restart: always
     volumes:
       - .:/code
@@ -36,3 +42,27 @@ services:
     ports:
       - "80:80"
       - "443:443"
+
+  daphne:
+    build: .
+    working_dir: /code/
+    command:
+      [
+        "./wait-for-it.sh",
+        "db:5432",
+        "--",
+        "daphne",
+        "-b",
+        "0.0.0.0",
+        "-p",
+        "9001",
+        "educa.asgi:application",
+      ]
+    restart: always
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=educa.settings.production
+    depends_on:
+      - db
+      - cache
