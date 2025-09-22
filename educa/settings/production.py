@@ -8,7 +8,7 @@ ADMINS = [
     ("Admin", os.environ.get('ADMIN_EMAIL', "admin@domain.com")),
 ]
 
-ALLOWED_HOSTS = ['educaproject.com', 'www.educaproject.com']
+ALLOWED_HOSTS = [".educaproject.com"]
 
 # Database configuration
 DATABASES = {
